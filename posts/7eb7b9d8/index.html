@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.lug.ustc.edu.cn/css?family=Courier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="七层模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络分层体系结构">
+<meta property="og:url" content="http://example.com/posts/7eb7b9d8/index.html">
+<meta property="og:site_name" content="海纳百川">
+<meta property="og:description" content="七层模型">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/tcpip.png">
+<meta property="og:image" content="http://example.com/images/xrrplcn7zy.webp">
+<meta property="og:image" content="http://example.com/images/ce1c3125a4cf4b57a23da3cc09603f24.png">
+<meta property="og:image" content="http://example.com/images/WX20240301-220916.png">
+<meta property="og:image" content="http://example.com/images/v2-13c1daebb7b5706a847f4e727d9dacde_r.jpg">
+<meta property="og:image" content="http://example.com/images/WX20240303-141906.png">
+<meta property="og:image" content="http://example.com/images/WX20240303-143123.png">
+<meta property="og:image" content="http://example.com/images/v2-fc55e7f0cf24786125ef2000b48259b5_720w.webp">
+<meta property="og:image" content="http://example.com/images/v2-e2c3a9e6015673ae21920eeeb98aa9c2_720w.webp">
+<meta property="og:image" content="http://example.com/images/WX20240303-154447.png">
+<meta property="og:image" content="http://example.com/images/v2-fc55e7f0cf24786125ef2000b48259b5_720w.webp">
+<meta property="og:image" content="http://example.com/images/WX20240303-155943.png">
+<meta property="og:image" content="http://example.com/images/20171209220259773.png">
+<meta property="og:image" content="http://example.com/images/WX20240303-181227.png">
+<meta property="og:image" content="http://example.com/images/download.png">
+<meta property="og:image" content="http://example.com/images/WX20240304-145443.png">
+<meta property="og:image" content="http://example.com/images/WX20240304-212439.png">
+<meta property="og:image" content="http://example.com/images/WX20240304-213826.png">
+<meta property="og:image" content="http://example.com/images/2218033471-5cc81004c4449.webp">
+<meta property="og:image" content="http://example.com/images/WX20240305-221315.png">
+<meta property="og:image" content="http://example.com/images/WX20240305-221859.png">
+<meta property="og:image" content="http://example.com/images/WX20240305-222156.png">
+<meta property="og:image" content="http://example.com/images/1.png">
+<meta property="og:image" content="http://example.com/images/WX20240307-122705.png">
+<meta property="og:image" content="http://example.com/images/WX20240307-145108.png">
+<meta property="article:published_time" content="2024-03-01T06:52:02.000Z">
+<meta property="article:modified_time" content="2025-06-07T04:09:21.457Z">
+<meta property="article:author" content="microli">
+<meta property="article:tag" content="JAVA, TS, 安卓">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/tcpip.png">
+
+
+<link rel="canonical" href="http://example.com/posts/7eb7b9d8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/posts/7eb7b9d8/","path":"posts/7eb7b9d8/","title":"计算机网络分层体系结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>计算机网络分层体系结构 | 海纳百川</title>
+  
+
+
+
+
+
+
+
+<link rel="dns-prefetch" href="https://waline-peach.vercel.app/">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">海纳百川</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-图书"><a href="/books/" rel="section"><i class="fa fa-book fa-fw"></i>图书</a></li><li class="menu-item menu-item-电影"><a href="/movies/" rel="section"><i class="fa fa-film fa-fw"></i>电影</a></li><li class="menu-item menu-item-音乐"><a href="/songs/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">七层模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="nav-number">2.</span> <span class="nav-text">物理层</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">3.</span> <span class="nav-text">数据链路层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MAC-%E5%9C%B0%E5%9D%80"><span class="nav-number">3.1.</span> <span class="nav-text">MAC 地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E5%B8%A7%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">数据链路层帧格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BA%BF%E5%99%A8"><span class="nav-number">3.3.</span> <span class="nav-text">集线器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BA%BF%E5%99%A8%E5%92%8C%E4%BA%A4%E6%8D%A2%E6%9C%BA"><span class="nav-number">3.4.</span> <span class="nav-text">集线器和交换机</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="nav-number">4.</span> <span class="nav-text">网络层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80"><span class="nav-number">4.1.</span> <span class="nav-text">IP地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">4.2.</span> <span class="nav-text">IP地址的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%92%E5%88%86%E5%AD%90%E7%BD%91"><span class="nav-number">4.3.</span> <span class="nav-text">划分子网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CIDR"><span class="nav-number">4.4.</span> <span class="nav-text">CIDR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E4%B8%80%E7%BD%91%E7%BB%9C%E7%9A%84%E5%88%A4%E6%96%AD"><span class="nav-number">4.5.</span> <span class="nav-text">同一网络的判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E7%BD%91IP%E5%92%8C%E7%A7%81%E7%BD%91IP"><span class="nav-number">4.6.</span> <span class="nav-text">公网IP和私网IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAT"><span class="nav-number">4.7.</span> <span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAPT"><span class="nav-number">4.8.</span> <span class="nav-text">NAPT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.9.</span> <span class="nav-text">IP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARP%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.10.</span> <span class="nav-text">ARP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMP%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.11.</span> <span class="nav-text">ICMP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="nav-number">4.12.</span> <span class="nav-text">路由器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82"><span class="nav-number">5.</span> <span class="nav-text">运输层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E5%8F%B7"><span class="nav-number">5.1.</span> <span class="nav-text">端口号</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="nav-number">6.</span> <span class="nav-text">传输层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.1.</span> <span class="nav-text">UDP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.2.</span> <span class="nav-text">TCP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">6.3.</span> <span class="nav-text">TCP协议的可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE%E9%A6%96%E9%83%A8%E6%A0%BC%E5%BC%8F"><span class="nav-number">6.4.</span> <span class="nav-text">TCP协议首部格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">6.5.</span> <span class="nav-text">流量控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">6.6.</span> <span class="nav-text">拥塞控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B-TCP-%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.7.</span> <span class="nav-text">建立 TCP 连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8A%E6%94%BE-TCP-%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.8.</span> <span class="nav-text">释放 TCP 连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-number">7.</span> <span class="nav-text">应用层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FTP%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.1.</span> <span class="nav-text">FTP协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.2.</span> <span class="nav-text">DNS协议</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="microli"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">microli</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">131</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shizhongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shizhongyu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/posts/7eb7b9d8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="microli">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海纳百川">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="计算机网络分层体系结构 | 海纳百川">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机网络分层体系结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-01 14:52:02" itemprop="dateCreated datePublished" datetime="2024-03-01T14:52:02+08:00">2024-03-01</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/posts/7eb7b9d8/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/7eb7b9d8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="waline-pageview-count" data-path="/posts/7eb7b9d8/"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="七层模型"><a href="#七层模型" class="headerlink" title="七层模型"></a>七层模型</h1><p><img src="/../images/tcpip.png" alt="tcpip.png"></p>
+<span id="more"></span>
+
+<p><img src="/../images/xrrplcn7zy.webp" alt="xrrplcn7zy.webp"></p>
+<h1 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h1><ol>
+<li>物理层为上一层数据链路层提供比特流传输服务。</li>
+<li>发送方物理层把0和1在传输介质上用波的形式传输出去。</li>
+<li>接收方物理层按照约定从波形中还原出0和1。</li>
+</ol>
+<h1 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h1><p>链路（Link）：从一个节点到相邻节点的一段物理线路（有线或无线），中间没有任何其他的交换节点（主要指路由器）</p>
+<p>数据链路层解决数据包在一个网络或一段链路上传输的问题，主要靠MAC地址。</p>
+<h2 id="MAC-地址"><a href="#MAC-地址" class="headerlink" title="MAC 地址"></a>MAC 地址</h2><ol>
+<li>MAC 地址也叫物理地址，（它是一个用来确认网络设备位置的地址），6字节，是用来唯一标识主机和路由器接口的。</li>
+<li>MAC 地址存在于主机的网卡和者路由器的接口中，全球唯一。</li>
+<li>FF-FF-FF-FF-FF-FF 是广播MAC地址。</li>
+<li>接收端网卡从数据链路层首部拿出目的MAC地址判断是否发给自己。</li>
+</ol>
+<h2 id="数据链路层帧格式"><a href="#数据链路层帧格式" class="headerlink" title="数据链路层帧格式"></a>数据链路层帧格式</h2><p><img src="/../images/ce1c3125a4cf4b57a23da3cc09603f24.png" alt="ce1c3125a4cf4b57a23da3cc09603f24.png"></p>
+<p>类型：标识数据部分使用的是什么协议，比如IP<br>FCS：用于检测帧在传输中是否出现了误码（比特差错）</p>
+<h2 id="集线器"><a href="#集线器" class="headerlink" title="集线器"></a>集线器</h2><ol>
+<li>使用集线器可以把多台主机连接在一起</li>
+<li>集线器只工作在物理层</li>
+<li>集线器的每个端口仅简单的转发比特</li>
+<li>每次发送消息，同一网段内所有主机都会收到</li>
+</ol>
+<h2 id="集线器和交换机"><a href="#集线器和交换机" class="headerlink" title="集线器和交换机"></a>集线器和交换机</h2><p><img src="/../images/WX20240301-220916.png" alt="WX20240301-220916.png"></p>
+<h1 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h1><h2 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h2><ol>
+<li>网络号相同的主机或路由器接口就处于同一网段或同一个局域网中。</li>
+<li>局域网之间通过路由器相连，形成互联网。</li>
+<li>因特网（Internet）就是最大的互联网。</li>
+</ol>
+<h2 id="IP地址的分类"><a href="#IP地址的分类" class="headerlink" title="IP地址的分类"></a>IP地址的分类</h2><p><img src="/../images/v2-13c1daebb7b5706a847f4e727d9dacde_r.jpg" alt="v2-13c1daebb7b5706a847f4e727d9dacde_r.jpg"></p>
+<ol>
+<li>只有A，B，C类地址可以分配给网络中的主机或路由器的各接口</li>
+<li>主机号 “全0” 的地址是网路地址，不能分配主机或路由器的各接口</li>
+<li>主机号 “全1” 的地址是广播地址，不能分配主机或路由器的各接口</li>
+<li>A类地址网络号0和127不能分配</li>
+</ol>
+<p>问题：<br>IP地址的分类方式不够灵活，容易造成大量IP地址浪费，因为此时IP地址的网络号和主机号是固定位数的。</p>
+<h2 id="划分子网"><a href="#划分子网" class="headerlink" title="划分子网"></a>划分子网</h2><ol>
+<li>从主机号中借用一些比特位作作为子网号划分出不同的子网</li>
+<li>可以使用子网掩码标识出子网的网络号和主机号分别有多少位</li>
+<li>子网掩码：坐起连续的1对应IP中的网络号和子网号，之后的0对应主机号</li>
+<li>将IP地址与对应的子网掩码按位与，就能得到该IP的网络地址</li>
+</ol>
+<p><img src="/../images/WX20240303-141906.png" alt="WX20240303-141906.png"></p>
+<p>默认子网掩码是指在未划分子网的情况下使用的子网掩码</p>
+<ol>
+<li>A类地址 255.0.0.0</li>
+<li>B类地址 255.255.0.0</li>
+<li>C类地址 255.255.255.0</li>
+</ol>
+<p><img src="/../images/WX20240303-143123.png" alt="WX20240303-143123.png"></p>
+<h2 id="CIDR"><a href="#CIDR" class="headerlink" title="CIDR"></a>CIDR</h2><ol>
+<li>仅从IP地址无法知道网络号和主机号，还需要子网掩码的配合</li>
+<li>可以使用CIDR简化IP和子网掩码的表达</li>
+<li>CIDR：无分类域间路由选择 Classless Inter-Domain-Routing</li>
+<li>消除了A类B类C类地址的概念</li>
+<li>消除了划分子网的概念</li>
+</ol>
+<p>IP：200.10.0.10<br>子网掩码：255.255.255.128<br>CIDR：200.40.0.10&#x2F;25</p>
+<h2 id="同一网络的判断"><a href="#同一网络的判断" class="headerlink" title="同一网络的判断"></a>同一网络的判断</h2><ol>
+<li>通信时，发送方主机用自己的IP地址和自己的子网掩码按位与</li>
+<li>发送方主机再用目的主机的IP地址和自己的子网掩码按位与</li>
+<li>判断目的主机是否与自己在同一网络&#x2F;段</li>
+<li>如果目的主机与自己在同一网络，可以直接向目的主机发送消息</li>
+<li>如果目的主机和自己不在同一网络，需要将消息发送到网关（路由器）</li>
+</ol>
+<h2 id="公网IP和私网IP"><a href="#公网IP和私网IP" class="headerlink" title="公网IP和私网IP"></a>公网IP和私网IP</h2><ol>
+<li>为了缓解IP地址不够用的问题</li>
+<li>公网IP：主要用于局域网，一般各不相同</li>
+<li>私网IP：主要用于局域网，不同网络可以相同</li>
+</ol>
+<p><img src="/../images/v2-fc55e7f0cf24786125ef2000b48259b5_720w.webp" alt="v2-fc55e7f0cf24786125ef2000b48259b5_720w.webp"></p>
+<p><img src="/../images/v2-e2c3a9e6015673ae21920eeeb98aa9c2_720w.webp" alt="v2-e2c3a9e6015673ae21920eeeb98aa9c2_720w.webp"></p>
+<p><img src="/../images/WX20240303-154447.png" alt="WX20240303-154447.png"></p>
+<h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><ol>
+<li>网络地址转换 Network Address Translation</li>
+<li>在私有网络连接到互联网的路由器上安装NAT软件，称为NAT路由器</li>
+<li>NAT路由器至少有一个有效的公网IP</li>
+<li>NAT路由器会建立公网IP和私有IP的对应关系表</li>
+<li>所有私有网络的主机在和外部通信时，会在NAT路由器上转换成公网IP</li>
+</ol>
+<p>NAT表</p>
+<p><img src="/../images/v2-fc55e7f0cf24786125ef2000b48259b5_720w.webp" alt="v2-fc55e7f0cf24786125ef2000b48259b5_720w.webp"></p>
+<h2 id="NAPT"><a href="#NAPT" class="headerlink" title="NAPT"></a>NAPT</h2><ol>
+<li>网络地址与端口号转换 Network Address Port Translation</li>
+<li>将NAT转换和运输层端口号结合使用</li>
+<li>使用私有网络的大量主机，可以公用NAPT路由器上1个全球IP地址</li>
+<li>NAPT路由器会建立公网IP 端口号和私有IP 端口号的对应关系表</li>
+<li>所有私有网络的主机在和外部通信时，会在NAPT路由器上转换成公网IP</li>
+</ol>
+<p>NAPT表</p>
+<p><img src="/../images/WX20240303-155943.png" alt="WX20240303-155943.png"></p>
+<h2 id="IP协议"><a href="#IP协议" class="headerlink" title="IP协议"></a>IP协议</h2><p>IP协议的首部格式</p>
+<p><img src="/../images/20171209220259773.png" alt="20171209220259773.png"></p>
+<ol>
+<li>版本：IP协议的版本，一般是版本4</li>
+<li>首部长度：协议首部长度，乘4才是最终长度</li>
+<li>总长度：首部+数据部分长度</li>
+<li>标识：帧的数据部分不超过1500B，过大的IP数据包需要分片，再交给数据链路层，同一数据包的所有分片标识都是一样的。</li>
+<li>标志：是否允许分片，是否是最后一个分片</li>
+<li>片偏移：每一片相对于原数据的字节偏移</li>
+<li>生存时间：路由器收到待转发的IP数据包时，将其首部中的该字段的值减一，若结果不为0就转发，否则就丢弃。</li>
+<li>协议：指明IP数据包的数据载荷是何种协议数据单元。</li>
+<li>首部校验和：用于检测在传输过程中IP首部是否出现了差错。</li>
+<li>填充：使其首部协议长度为4的倍数。</li>
+</ol>
+<p><img src="/../images/WX20240303-181227.png" alt="WX20240303-181227.png"></p>
+<h2 id="ARP协议"><a href="#ARP协议" class="headerlink" title="ARP协议"></a>ARP协议</h2><ol>
+<li>地址解析协议 Address Resolution Protocol</li>
+<li>通过IP地址获取MAC地址</li>
+<li>同一网络中的主机或路由器接口之间才能使用ARP获取MAC地址。</li>
+<li>主机或路由器拿到目的主机的MAC地址后，会记录在自己的ARP缓存中</li>
+<li>每次通信前都会查看自己的ARP表，没有找到，才会再次发送ARP请求</li>
+</ol>
+<p><img src="/../images/download.png" alt="download.png"></p>
+<h2 id="ICMP协议"><a href="#ICMP协议" class="headerlink" title="ICMP协议"></a>ICMP协议</h2><ol>
+<li>网际控制报文协议 Internet Control Message Protocol</li>
+<li>主机或路由器使用ICMP来发送 询问报文和差错报告报文</li>
+<li>常见的询问报文有两种：回送请求和回答，时间戳请求和回答</li>
+<li>ICMP是网络层协议</li>
+<li>ICMP报文被封装在IP数据报中发送</li>
+<li>ICMP报文作为IP数据报的数据载荷</li>
+<li>协议的数据载荷并不一定都是从上一层来的，有的没有上一层</li>
+</ol>
+<p>IMCP 询问报文-回送请求和回答</p>
+<ol>
+<li>由主机或路由器向一个特定的目的的主机或者路由器发出</li>
+<li>收到次报文的主机或路由器必须发送ICMP回送回答报文</li>
+<li>这种询问报文用来测试目的站是否可达以及了解其有关状态</li>
+<li>ping命令使用的就是ICMP询问报文</li>
+</ol>
+<p>ICMP 差错报告报文</p>
+<ol>
+<li>用来向主机或路由器报告差错情况</li>
+<li>常见的差错有：终点不可达，超时等</li>
+<li>tracert命名用于检测IP数据报从源主机到达目的主机要经过哪些路由器</li>
+<li>tracert使用ICMP报文类型有询问报文以及差错报告报文</li>
+</ol>
+<h2 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h2><ol>
+<li>一种具有多个输入端口和输出端口的专用计算机</li>
+<li>在不同网络之间转发数据</li>
+<li>不同网络之间的主机通信，需要路由器</li>
+<li>默认情况下，路由器只知道跟它直连的网络怎么走</li>
+<li>非直连网络需要通过配置静态（手动）或 动态路由（协议）的方式告诉它</li>
+<li>路由表用来记录如何到达某个网络</li>
+<li>数据到来时，路由器会取出目的主机的IP地址</li>
+<li>根据自身的路由表，决定从哪个端口转发出去</li>
+<li>路由器是三层设备（网络层设备）</li>
+</ol>
+<p><img src="/../images/WX20240304-145443.png" alt="WX20240304-145443.png"></p>
+<h1 id="运输层"><a href="#运输层" class="headerlink" title="运输层"></a>运输层</h1><ol>
+<li>前三层解决了数据从主机到主机的问题</li>
+<li>实际进行通信的真正实体，是位于通信两端主机的进程</li>
+<li>运输层协议解决数据从进程到进程的问题</li>
+</ol>
+<h2 id="端口号"><a href="#端口号" class="headerlink" title="端口号"></a>端口号</h2><ol>
+<li>如何标识不同的应用进程呢</li>
+<li>使用端口号来表示和区分不同的进程</li>
+<li>操作系统会记录各个进程占用（监听）的端口号</li>
+<li>端口号的长度为16比特，取值范围是0-65535</li>
+</ol>
+<p>端口号分类</p>
+<p><img src="/../images/WX20240304-212439.png" alt="WX20240304-212439.png"></p>
+<h1 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h1><h2 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h2><p><img src="/../images/WX20240304-213826.png" alt="WX20240304-213826.png"></p>
+<p><img src="/../images/2218033471-5cc81004c4449.webp" alt="2218033471-5cc81004c4449.webp"></p>
+<h2 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h2><ol>
+<li>传输控制协议 Transmission Control Protocol</li>
+<li>提供面向连接的可靠传输服务</li>
+<li>传输之前需要先建立连接，传输后需要释放连接</li>
+<li>出现误码，丢失现象会要求重传，重复的会丢弃，乱序数据也会被正确重组</li>
+<li>一般用于可靠传输的应用，例如文件，邮件传输</li>
+<li>TCP是面向字节流的</li>
+<li>会给要传输数据的每一个字节都编号</li>
+</ol>
+<h2 id="TCP协议的可靠传输"><a href="#TCP协议的可靠传输" class="headerlink" title="TCP协议的可靠传输"></a>TCP协议的可靠传输</h2><p><img src="/../images/WX20240305-221315.png" alt="WX20240305-221315.png"></p>
+<p><img src="/../images/WX20240305-221859.png" alt="WX20240305-221859.png"></p>
+<p><img src="/../images/WX20240305-222156.png" alt="WX20240305-222156.png"></p>
+<h2 id="TCP协议首部格式"><a href="#TCP协议首部格式" class="headerlink" title="TCP协议首部格式"></a>TCP协议首部格式</h2><p><img src="/../images/1.png" alt="1.png"></p>
+<p>TCP首部包括20字节的固定首部部分和扩展首部（选项 + 填充），扩展首部最大40字节。<br>20个字节又分为5部分，每部分4个字节32位，如图中的5行，每行表示32位。</p>
+<ol>
+<li>序号：指出本TCP数据载荷第一个字节的序号。</li>
+<li>确认号：对之前收到的所有字节的确认，同时指出期望收到对方下一个TCP数据载荷的第一个字节的序号。比如收到1-5字节的数据，会返回6。</li>
+<li>ACK：只有当ACK为1时，确认号字段才有效。</li>
+<li>数据偏移：指出TCP数据部分的起始处偏移TCP起始处有多远，其实就是TCP的首部长度需乘4</li>
+<li>SYN：用于TCP “三次握手” 建立连接， &#x3D; 1时表明这是一个TCP连接报文</li>
+<li>FIN：用于TCP “四次挥手”释放连接， &#x3D; 1 时表明此TCP的发送方已经将全部数据发送完毕，要求释放TCP连接。</li>
+<li>PSH：推送标志位，提醒接收方取走接受缓冲区的数据</li>
+<li>RST：用于复位TCP连接，&#x3D; 1时表明TCP连接出现严重差错，必须释放连接，让后重新建立连接。</li>
+<li>URG：紧急标志位， &#x3D; 1时，紧急指针字段才有效。</li>
+<li>窗口：用来让对方设置发送窗口的大小，单位为字节。</li>
+<li>紧急指针：指出本TCP数据部分包含了多长的紧急数据，紧急数据之后是普通数据。</li>
+<li>扩展首部：一些扩展功能，如选择确认，窗口扩大，MSS等，填充保证首部长度能被4整除。</li>
+</ol>
+<h2 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h2><ol>
+<li>当发送方发送数据太快，接收方来不及接收，会造成接收方缓存溢出</li>
+<li>接收方会通过TCP报文段的 “窗口” 字段告诉发送方调整发送窗口</li>
+<li>接收方酌情调整发送窗口</li>
+<li>发送窗口&#x3D; min（拥塞窗口，接收窗口）</li>
+</ol>
+<h2 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h2><ol>
+<li>网络中的链路或路由器过载时，会丢弃数据包，这种情况就是网络拥塞</li>
+<li>为了避免拥塞，TCP采用拥塞控制</li>
+<li>拥塞控制采用一系列方法控制拥塞窗口的大小，进而控制发送窗口的大小</li>
+</ol>
+<h2 id="建立-TCP-连接"><a href="#建立-TCP-连接" class="headerlink" title="建立 TCP 连接"></a>建立 TCP 连接</h2><ol>
+<li>SYN表示请求建立连接，</li>
+<li>ACK表示响应</li>
+</ol>
+<p><img src="/../images/WX20240307-122705.png" alt="WX20240307-122705.png"></p>
+<h2 id="释放-TCP-连接"><a href="#释放-TCP-连接" class="headerlink" title="释放 TCP 连接"></a>释放 TCP 连接</h2><ol>
+<li>FIN表示关闭连接</li>
+</ol>
+<p><img src="/../images/WX20240307-145108.png" alt="WX20240307-145108.png"></p>
+<h1 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h1><h2 id="FTP协议"><a href="#FTP协议" class="headerlink" title="FTP协议"></a>FTP协议</h2><h2 id="DNS协议"><a href="#DNS协议" class="headerlink" title="DNS协议"></a>DNS协议</h2>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .poem-container {
+      text-align: center;
+      margin-top: 30px;
+      border: 2px solid gray;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+    .poem-content {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .poem-details {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="poem-container">
+    <span class="poem-content" id="jrsc">正在加载今日诗词....</span>
+    <br>
+    <span class="poem-details" id="jrsc-details"></span>
+  </div>
+
+  <script src="//sdk.jinrishici.com/v2/browser/jinrishici.js"></script>
+  <script>
+    jinrishici.load((result) => {
+      let jrsc = document.getElementById('jrsc');
+      let jrscDetails = document.getElementById('jrsc-details');
+      const data = result.data;
+      let author = data.origin.author;
+      let title = '《' + data.origin.title + '》';
+      let content = data.content.substr(0, data.content.length - 1);
+      let dynasty = data.origin.dynasty.substr(0, data.origin.dynasty.length - 1);
+      jrsc.innerText = content;
+      jrscDetails.innerText = dynasty + ' · ' + author + ' ' + title;
+    });
+  </script>
+</body>
+</html>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/217333d4/" rel="prev" title="2024-02日记">
+                  <i class="fa fa-angle-left"></i> 2024-02日记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/af3eed3c/" rel="next" title="HTTP协议">
+                  HTTP协议 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">microli</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-cn","enable":true,"serverURL":"https://waline-peach.vercel.app/","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"placeholder":"请文明评论呀","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":true,"requiredFields":[],"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","el":"#waline","comment":true,"path":"/posts/7eb7b9d8/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

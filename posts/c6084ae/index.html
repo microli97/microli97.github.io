@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.lug.ustc.edu.cn/css?family=Courier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="概述解决ANR(Application Not Responding)一直是Android 开发者需要掌握的重要技巧，一般从三个方面着手。  开发阶段：通过工具检查各个方法的耗时，卡顿情况，发现一处修改一处。 线上阶段：这个阶段主要依靠监控工具发现ANR并上报，比如matrix。 分析阶段：如果线上用户发生ANR，并且你获取了一份日志，这就涉及了本文要分享的内容——ANR日志分析技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ANR全面解析">
+<meta property="og:url" content="http://example.com/posts/c6084ae/index.html">
+<meta property="og:site_name" content="海纳百川">
+<meta property="og:description" content="概述解决ANR(Application Not Responding)一直是Android 开发者需要掌握的重要技巧，一般从三个方面着手。  开发阶段：通过工具检查各个方法的耗时，卡顿情况，发现一处修改一处。 线上阶段：这个阶段主要依靠监控工具发现ANR并上报，比如matrix。 分析阶段：如果线上用户发生ANR，并且你获取了一份日志，这就涉及了本文要分享的内容——ANR日志分析技巧。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/55ea536a4b3f4108abe5214f8ec15f0d~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.webp">
+<meta property="article:published_time" content="2024-03-20T01:40:09.000Z">
+<meta property="article:modified_time" content="2025-06-07T04:09:21.442Z">
+<meta property="article:author" content="microli">
+<meta property="article:tag" content="JAVA, TS, 安卓">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/55ea536a4b3f4108abe5214f8ec15f0d~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.webp">
+
+
+<link rel="canonical" href="http://example.com/posts/c6084ae/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/posts/c6084ae/","path":"posts/c6084ae/","title":"ANR全面解析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ANR全面解析 | 海纳百川</title>
+  
+
+
+
+
+
+
+
+<link rel="dns-prefetch" href="https://waline-peach.vercel.app/">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">海纳百川</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-图书"><a href="/books/" rel="section"><i class="fa fa-book fa-fw"></i>图书</a></li><li class="menu-item menu-item-电影"><a href="/movies/" rel="section"><i class="fa fa-film fa-fw"></i>电影</a></li><li class="menu-item menu-item-音乐"><a href="/songs/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">2.</span> <span class="nav-text">原因</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E5%AF%BC%E8%87%B4ANR%EF%BC%88%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">应用层导致ANR（耗时操作）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%AF%BC%E8%87%B4ANR"><span class="nav-number">2.2.</span> <span class="nav-text">系统导致ANR</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E6%97%A5%E5%BF%97"><span class="nav-number">3.</span> <span class="nav-text">分析日志</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU-%E8%B4%9F%E8%BD%BD"><span class="nav-number">3.1.</span> <span class="nav-text">CPU 负载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">内存信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E6%B6%88%E6%81%AF"><span class="nav-number">3.3.</span> <span class="nav-text">堆栈消息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">典型案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E6%97%A0%E5%8D%A1%E9%A1%BF%EF%BC%8C%E5%A4%84%E4%BA%8E%E6%AD%A3%E5%B8%B8%E7%8A%B6%E6%80%81%E5%A0%86%E6%A0%88"><span class="nav-number">4.1.</span> <span class="nav-text">主线程无卡顿，处于正常状态堆栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E6%89%A7%E8%A1%8C%E8%80%97%E6%97%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">4.2.</span> <span class="nav-text">主线程执行耗时操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E8%A2%AB%E9%94%81%E9%98%BB%E5%A1%9E"><span class="nav-number">4.3.</span> <span class="nav-text">主线程被锁阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E8%A2%AB%E6%8A%A2%E5%8D%A0"><span class="nav-number">4.4.</span> <span class="nav-text">CPU被抢占</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6%E5%AF%BC%E8%87%B4ANR"><span class="nav-number">4.5.</span> <span class="nav-text">系统服务超时导致ANR</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="microli"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">microli</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">131</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shizhongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shizhongyu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/posts/c6084ae/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="microli">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海纳百川">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ANR全面解析 | 海纳百川">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ANR全面解析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-20 09:40:09" itemprop="dateCreated datePublished" datetime="2024-03-20T09:40:09+08:00">2024-03-20</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/posts/c6084ae/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/c6084ae/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="waline-pageview-count" data-path="/posts/c6084ae/"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>解决ANR(Application Not Responding)一直是Android 开发者需要掌握的重要技巧，一般从三个方面着手。</p>
+<ol>
+<li>开发阶段：通过工具检查各个方法的耗时，卡顿情况，发现一处修改一处。</li>
+<li>线上阶段：这个阶段主要依靠监控工具发现ANR并上报，比如matrix。</li>
+<li>分析阶段：如果线上用户发生ANR，并且你获取了一份日志，这就涉及了本文要分享的内容——ANR日志分析技巧。</li>
+</ol>
+<span id="more"></span>
+
+<h1 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h1><p>主线程的消息得不到及时响应。</p>
+<p>很多开发者认为，那就是耗时操作导致ANR，全部是app应用层的问题。实际上，线上环境大部分ANR由系统原因导致。</p>
+<h2 id="应用层导致ANR（耗时操作）"><a href="#应用层导致ANR（耗时操作）" class="headerlink" title="应用层导致ANR（耗时操作）"></a>应用层导致ANR（耗时操作）</h2><ol>
+<li>函数阻塞：如死循环、主线程IO、处理大数据</li>
+<li>锁出错：主线程等待子线程的锁</li>
+<li>内存紧张：系统分配给一个应用的内存是有上限的，长期处于内存紧张，会导致频繁内存交换，进而导致应用的一些操作超时</li>
+</ol>
+<h2 id="系统导致ANR"><a href="#系统导致ANR" class="headerlink" title="系统导致ANR"></a>系统导致ANR</h2><ol>
+<li>CPU被抢占：一般来说，前台在玩游戏，可能会导致你的后台广播被抢占CPU</li>
+<li>系统服务无法及时响应：比如获取系统联系人等，系统的服务都是Binder机制，服务能力也是有限的，有可能系统服务长时间不响应导致ANR</li>
+<li>其他应用占用的大量内存</li>
+</ol>
+<h1 id="分析日志"><a href="#分析日志" class="headerlink" title="分析日志"></a>分析日志</h1><p>发生ANR的时候，系统会产生一份anr日志文件（手机的&#x2F;data&#x2F;anr 目录下，文件名称可能各厂商不一样，业内大多称呼为trace文件），内含如下几项重要信息。</p>
+<h2 id="CPU-负载"><a href="#CPU-负载" class="headerlink" title="CPU 负载"></a>CPU 负载</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Load: <span class="number">2.62</span> / <span class="number">2.55</span> / <span class="number">2.25</span></span><br><span class="line">CPU usage from 0ms to 1987ms <span class="title function_">later</span> <span class="params">(<span class="number">2020</span>-<span class="number">03</span>-<span class="number">10</span> 08:<span class="number">31</span>:<span class="number">55.169</span> to <span class="number">2020</span>-<span class="number">03</span>-<span class="number">10</span> 08:<span class="number">32</span>:<span class="number">17.156</span>)</span>:</span><br><span class="line">  <span class="number">41</span>% <span class="number">2080</span>/system_server: <span class="number">28</span>% user + <span class="number">12</span>% kernel / faults: <span class="number">76445</span> minor <span class="number">180</span> major</span><br><span class="line">  <span class="number">26</span>% <span class="number">9378</span>/com.xiaomi.store: <span class="number">20</span>% user + <span class="number">6.8</span>% kernel / faults: <span class="number">68408</span> minor <span class="number">68</span> major</span><br><span class="line">........省略N行.....</span><br><span class="line"><span class="number">66</span>% TOTAL: <span class="number">20</span>% user + <span class="number">15</span>% kernel + <span class="number">28</span>% iowait + <span class="number">0.7</span>% irq + <span class="number">0.7</span>% softirq</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>第一行：1、5、15 分钟内正在使用和等待使用CPU 的活动进程的平均数</li>
+<li>第二行：表明负载信息抓取在ANR发生之后的0~1987ms。同时也指明了ANR的时间点：2020-03-10 08:31:55.169</li>
+<li>中间部分：各个进程占用的CPU的详细情况</li>
+<li>最后一行：各个进程合计占用的CPU信息。</li>
+</ol>
+<p>名词解释</p>
+<ol>
+<li>user:用户态,kernel:内核态</li>
+<li>faults:内存缺页，minor——轻微的，major——重度，需要从磁盘拿数据</li>
+<li>iowait:IO使用（等待）占比</li>
+<li>irq:硬中断，softirq:软中断</li>
+</ol>
+<p>注意</p>
+<ol>
+<li>iowait占比很高，意味着有很大可能，是io耗时导致ANR，具体进一步查看有没有进程faults major比较多。</li>
+<li>单进程CPU的负载并不是以100%为上限，而是有几个核，就有百分之几百，如4核上限为400%。</li>
+</ol>
+<h2 id="内存信息"><a href="#内存信息" class="headerlink" title="内存信息"></a>内存信息</h2><ol>
+<li>Total number of allocations 476778　　进程创建到现在一共创建了多少对象</li>
+<li>Total bytes allocated 52MB　进程创建到现在一共申请了多少内存</li>
+<li>Total bytes freed 52MB　　　进程创建到现在一共释放了多少内存</li>
+<li>Free memory 777KB　　　 不扩展堆的情况下可用的内存</li>
+<li>Free memory until GC 777KB　　GC前的可用内存</li>
+<li>Free memory until OOME 383MB　　OOM之前的可用内存</li>
+<li>Total memory 当前总内存（已用+可用）</li>
+<li>Max memory 384MB  进程最多能申请的内存</li>
+</ol>
+<p>从含义可以得出结论：**Free memory until OOME **的值很小的时候，已经处于内存紧张状态。应用可能是占用了过多内存。</p>
+<p>另外，除了trace文件中有内存信息，普通的eventlog日志中，也有内存信息（不一定打印）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">04</span>-<span class="number">02</span> <span class="number">22</span>:<span class="number">00</span>:<span class="number">08.195</span>  <span class="number">1531</span>  <span class="number">1544</span> I am_meminfo: [<span class="number">350937088</span>,<span class="number">41086976</span>,<span class="number">492830720</span>,<span class="number">427937792</span>,<span class="number">291887104</span>]</span><br></pre></td></tr></table></figure>
+
+<p>以上四个值分别指的是：</p>
+<ol>
+<li>Cached</li>
+<li>Free,</li>
+<li>Zram,</li>
+<li>Kernel,Native</li>
+</ol>
+<p>Cached+Free的内存代表着当前整个手机的可用内存，如果值很小，意味着处于内存紧张状态。一般低内存的判定阈值为：4G 内存手机以下阀值：350MB，以上阀值则为：450MB<br>ps:如果ANR时间点前后，日志里有打印onTrimMemory，也可以作为内存紧张的一个参考判断</p>
+<h2 id="堆栈消息"><a href="#堆栈消息" class="headerlink" title="堆栈消息"></a>堆栈消息</h2><p>堆栈信息是最重要的一个信息，展示了ANR发生的进程当前所有线程的状态。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">suspend all histogram:  Sum: <span class="number">2.</span>834s <span class="number">99</span>% C.I. <span class="number">5.</span>738us-<span class="number">7145.</span>919us Avg: <span class="number">607.</span>155us Max: 41543us</span><br><span class="line">DALVIK <span class="title function_">THREADS</span> <span class="params">(<span class="number">248</span>)</span>:</span><br><span class="line"><span class="string">&quot;main&quot;</span> prio=<span class="number">5</span> tid=<span class="number">1</span> Native</span><br><span class="line">  | group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> flags=<span class="number">1</span> obj=<span class="number">0x74b17080</span> self=<span class="number">0x7bb7a14c00</span></span><br><span class="line">  | sysTid=<span class="number">2080</span> nice=-<span class="number">2</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x7c3e82b548</span></span><br><span class="line">  | state=S schedstat=( <span class="number">757205342094</span> <span class="number">583547320723</span> <span class="number">2145008</span> ) utm=<span class="number">52002</span> stm=<span class="number">23718</span> core=<span class="number">5</span> HZ=<span class="number">100</span></span><br><span class="line">  | stack=<span class="number">0x7fdc995000</span>-<span class="number">0x7fdc997000</span> stackSize=8MB</span><br><span class="line">  | held mutexes=</span><br><span class="line">  kernel: __switch_to+<span class="number">0xb0</span>/<span class="number">0xbc</span></span><br><span class="line">  kernel: SyS_epoll_wait+<span class="number">0x288</span>/<span class="number">0x364</span></span><br><span class="line">  kernel: SyS_epoll_pwait+<span class="number">0xb0</span>/<span class="number">0x124</span></span><br><span class="line">  kernel: cpu_switch_to+<span class="number">0x38c</span>/<span class="number">0x2258</span></span><br><span class="line">  <span class="keyword">native</span>: #<span class="number">00</span> pc 000000000007cd8c  /system/lib64/libc.so (__epoll_pwait+<span class="number">8</span>)</span><br><span class="line">  <span class="keyword">native</span>: #<span class="number">01</span> pc 0000000000014d48  /system/lib64/libutils.so (android::Looper::pollInner(<span class="type">int</span>)+<span class="number">148</span>)</span><br><span class="line">  <span class="keyword">native</span>: #<span class="number">02</span> pc 0000000000014c18  /system/lib64/libutils.so (android::Looper::pollOnce(<span class="type">int</span>, <span class="type">int</span>*, <span class="type">int</span>*, <span class="keyword">void</span>**)+<span class="number">60</span>)</span><br><span class="line">  <span class="keyword">native</span>: #<span class="number">03</span> pc <span class="number">0000000000127474</span>  /system/lib64/libandroid_runtime.so (android::android_os_MessageQueue_nativePollOnce(_JNIEnv*, _jobject*, <span class="type">long</span>, <span class="type">int</span>)+<span class="number">44</span>)</span><br><span class="line">  at android.os.MessageQueue.nativePollOnce(Native method)</span><br><span class="line">  at android.os.MessageQueue.next(MessageQueue.java:<span class="number">330</span>)</span><br><span class="line">  at android.os.Looper.loop(Looper.java:<span class="number">169</span>)</span><br><span class="line">  at com.android.server.SystemServer.run(SystemServer.java:<span class="number">508</span>)</span><br><span class="line">  at com.android.server.SystemServer.main(SystemServer.java:<span class="number">340</span>)</span><br><span class="line">  at java.lang.reflect.Method.invoke(Native method)</span><br><span class="line">  at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:<span class="number">536</span>)</span><br><span class="line">  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:<span class="number">856</span>)</span><br><span class="line">   </span><br><span class="line">  ........省略N行.....</span><br><span class="line">   </span><br><span class="line">  <span class="string">&quot;OkHttp ConnectionPool&quot;</span> daemon prio=<span class="number">5</span> tid=<span class="number">251</span> TimedWaiting</span><br><span class="line">  | group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> flags=<span class="number">1</span> obj=<span class="number">0x13daea90</span> self=<span class="number">0x7bad32b400</span></span><br><span class="line">  | sysTid=<span class="number">29998</span> nice=<span class="number">0</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x7b7d2614f0</span></span><br><span class="line">  | state=S schedstat=( <span class="number">951407</span> <span class="number">137448</span> <span class="number">11</span> ) utm=<span class="number">0</span> stm=<span class="number">0</span> core=<span class="number">3</span> HZ=<span class="number">100</span></span><br><span class="line">  | stack=<span class="number">0x7b7d15e000</span>-<span class="number">0x7b7d160000</span> stackSize=1041KB</span><br><span class="line">  | held mutexes=</span><br><span class="line">  at java.lang.Object.wait(Native method)</span><br><span class="line">  - waiting on &lt;<span class="number">0x05e5732e</span>&gt; (a com.android.okhttp.ConnectionPool)</span><br><span class="line">  at com.android.okhttp.ConnectionPool$<span class="number">1.</span>run(ConnectionPool.java:<span class="number">103</span>)</span><br><span class="line">  - locked &lt;<span class="number">0x05e5732e</span>&gt; (a com.android.okhttp.ConnectionPool)</span><br><span class="line">  at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1167</span>)</span><br><span class="line">  at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">641</span>)</span><br><span class="line">  at java.lang.Thread.run(Thread.java:<span class="number">764</span>)</span><br></pre></td></tr></table></figure>
+<p>如上日志所示，本文截图了两个线程信息，一个是主线程main，它的状态是native。<br>另一个是OkHttp ConnectionPool，它的状态是TimeWaiting。</p>
+<p>trace文件中的状态是是CPP代码中定义的状态，(不是java的线程状态)下面是一张对应关系表。</p>
+<p><img src="/../images/55ea536a4b3f4108abe5214f8ec15f0d~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.webp" alt="55ea536a4b3f4108abe5214f8ec15f0d~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.webp"></p>
+<p>由此可知，main函数的native状态是正在执行JNI函数。堆栈信息是我们分析ANR的第一个重要的信息，一般来说：</p>
+<ol>
+<li>main线程处于 BLOCK、WAITING、TIMEWAITING状态，那基本上是函数阻塞导致ANR；</li>
+<li>如果main线程无异常，则应该排查CPU负载和内存环境。</li>
+</ol>
+<h1 id="典型案例分析"><a href="#典型案例分析" class="headerlink" title="典型案例分析"></a>典型案例分析</h1><h2 id="主线程无卡顿，处于正常状态堆栈"><a href="#主线程无卡顿，处于正常状态堆栈" class="headerlink" title="主线程无卡顿，处于正常状态堆栈"></a>主线程无卡顿，处于正常状态堆栈</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;main&quot;</span> prio=<span class="number">5</span> tid=<span class="number">1</span> Native</span><br><span class="line">| group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> flags=<span class="number">1</span> obj=<span class="number">0x74b38080</span> self=<span class="number">0x7ad9014c00</span></span><br><span class="line">| sysTid=<span class="number">23081</span> nice=<span class="number">0</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x7b5fdc5548</span></span><br><span class="line">| state=S schedstat=( <span class="number">284838633</span> <span class="number">166738594</span> <span class="number">505</span> ) utm=<span class="number">21</span> stm=<span class="number">7</span> core=<span class="number">1</span> HZ=<span class="number">100</span></span><br><span class="line">| stack=<span class="number">0x7fc95da000</span>-<span class="number">0x7fc95dc000</span> stackSize=8MB</span><br><span class="line">| held mutexes=</span><br><span class="line">kernel: __switch_to+<span class="number">0xb0</span>/<span class="number">0xbc</span></span><br><span class="line">kernel: SyS_epoll_wait+<span class="number">0x288</span>/<span class="number">0x364</span></span><br><span class="line">kernel: SyS_epoll_pwait+<span class="number">0xb0</span>/<span class="number">0x124</span></span><br><span class="line">kernel: cpu_switch_to+<span class="number">0x38c</span>/<span class="number">0x2258</span></span><br><span class="line"><span class="keyword">native</span>: #<span class="number">00</span> pc 000000000007cd8c  /system/lib64/libc.so (__epoll_pwait+<span class="number">8</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">01</span> pc 0000000000014d48  /system/lib64/libutils.so (android::Looper::pollInner(<span class="type">int</span>)+<span class="number">148</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">02</span> pc 0000000000014c18  /system/lib64/libutils.so (android::Looper::pollOnce(<span class="type">int</span>, <span class="type">int</span>*, <span class="type">int</span>*, <span class="keyword">void</span>**)+<span class="number">60</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">03</span> pc 00000000001275f4  /system/lib64/libandroid_runtime.so (android::android_os_MessageQueue_nativePollOnce(_JNIEnv*, _jobject*, <span class="type">long</span>, <span class="type">int</span>)+<span class="number">44</span>)</span><br><span class="line">at android.os.MessageQueue.nativePollOnce(Native method)</span><br><span class="line">at android.os.MessageQueue.next(MessageQueue.java:<span class="number">330</span>)</span><br><span class="line">at android.os.Looper.loop(Looper.java:<span class="number">169</span>)</span><br><span class="line">at android.app.ActivityThread.main(ActivityThread.java:<span class="number">7073</span>)</span><br><span class="line">at java.lang.reflect.Method.invoke(Native method)</span><br><span class="line">at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:<span class="number">536</span>)</span><br><span class="line">at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:<span class="number">876</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上述主线程堆栈就是一个很正常的空闲堆栈，表明主线程正在等待新的消息。</p>
+<p>如果ANR日志里主线程是这样一个状态，那可能有两个原因：</p>
+<ol>
+<li>该ANR是CPU抢占或内存紧张等其他因素引起</li>
+<li>这份ANR日志抓取的时候，主线程已经恢复正常</li>
+</ol>
+<h2 id="主线程执行耗时操作"><a href="#主线程执行耗时操作" class="headerlink" title="主线程执行耗时操作"></a>主线程执行耗时操作</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;main&quot;</span> prio=<span class="number">5</span> tid=<span class="number">1</span> Runnable</span><br><span class="line">  | group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">0</span> dsCount=<span class="number">0</span> flags=<span class="number">0</span> obj=<span class="number">0x72deb848</span> self=<span class="number">0x7748c10800</span></span><br><span class="line">  | sysTid=<span class="number">8968</span> nice=-<span class="number">10</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x77cfa75ed0</span></span><br><span class="line">  | state=R schedstat=( <span class="number">24783612979</span> <span class="number">48520902</span> <span class="number">756</span> ) utm=<span class="number">2473</span> stm=<span class="number">5</span> core=<span class="number">5</span> HZ=<span class="number">100</span></span><br><span class="line">  | stack=<span class="number">0x7fce68b000</span>-<span class="number">0x7fce68d000</span> stackSize=8192KB</span><br><span class="line">  | held mutexes= <span class="string">&quot;mutator lock&quot;</span>(shared held)</span><br><span class="line">  at com.example.test.MainActivity$onCreate$<span class="number">2.</span>onClick(MainActivity.kt:<span class="number">20</span>)——关键行！！！</span><br><span class="line">  at android.view.View.performClick(View.java:<span class="number">7187</span>)</span><br><span class="line">  at android.view.View.performClickInternal(View.java:<span class="number">7164</span>)</span><br><span class="line">  at android.view.View.access$<span class="number">3500</span>(View.java:<span class="number">813</span>)</span><br><span class="line">  at android.view.View$PerformClick.run(View.java:<span class="number">27640</span>)</span><br><span class="line">  at android.os.Handler.handleCallback(Handler.java:<span class="number">883</span>)</span><br><span class="line">  at android.os.Handler.dispatchMessage(Handler.java:<span class="number">100</span>)</span><br><span class="line">  at android.os.Looper.loop(Looper.java:<span class="number">230</span>)</span><br><span class="line">  at android.app.ActivityThread.main(ActivityThread.java:<span class="number">7725</span>)</span><br><span class="line">  at java.lang.reflect.Method.invoke(Native method)</span><br><span class="line">  at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:<span class="number">526</span>)</span><br><span class="line">  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:<span class="number">1034</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上述日志表明，主线程正处于执行状态，看堆栈信息可知不是处于空闲状态，发生ANR是因为一处click监听函数里执行了耗时操作。</p>
+<h2 id="主线程被锁阻塞"><a href="#主线程被锁阻塞" class="headerlink" title="主线程被锁阻塞"></a>主线程被锁阻塞</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;main&quot;</span> prio=<span class="number">5</span> tid=<span class="number">1</span> Blocked</span><br><span class="line">  | group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> flags=<span class="number">1</span> obj=<span class="number">0x72deb848</span> self=<span class="number">0x7748c10800</span></span><br><span class="line">  | sysTid=<span class="number">22838</span> nice=-<span class="number">10</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x77cfa75ed0</span></span><br><span class="line">  | state=S schedstat=( <span class="number">390366023</span> <span class="number">28399376</span> <span class="number">279</span> ) utm=<span class="number">34</span> stm=<span class="number">5</span> core=<span class="number">1</span> HZ=<span class="number">100</span></span><br><span class="line">  | stack=<span class="number">0x7fce68b000</span>-<span class="number">0x7fce68d000</span> stackSize=8192KB</span><br><span class="line">  | held mutexes=</span><br><span class="line">  at com.example.test.MainActivity$onCreate$<span class="number">1.</span>onClick(MainActivity.kt:<span class="number">15</span>)</span><br><span class="line">  - waiting to lock &lt;<span class="number">0x01aed1da</span>&gt; (a java.lang.Object) held by thread <span class="number">3</span> ——————关键行！！！</span><br><span class="line">  at android.view.View.performClick(View.java:<span class="number">7187</span>)</span><br><span class="line">  at android.view.View.performClickInternal(View.java:<span class="number">7164</span>)</span><br><span class="line">  at android.view.View.access$<span class="number">3500</span>(View.java:<span class="number">813</span>)</span><br><span class="line">  at android.view.View$PerformClick.run(View.java:<span class="number">27640</span>)</span><br><span class="line">  at android.os.Handler.handleCallback(Handler.java:<span class="number">883</span>)</span><br><span class="line">  at android.os.Handler.dispatchMessage(Handler.java:<span class="number">100</span>)</span><br><span class="line">  at android.os.Looper.loop(Looper.java:<span class="number">230</span>)</span><br><span class="line">  at android.app.ActivityThread.main(ActivityThread.java:<span class="number">7725</span>)</span><br><span class="line">  at java.lang.reflect.Method.invoke(Native method)</span><br><span class="line">  at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:<span class="number">526</span>)</span><br><span class="line">  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:<span class="number">1034</span>)</span><br><span class="line">   </span><br><span class="line">  ........省略N行.....</span><br><span class="line">   </span><br><span class="line">  <span class="string">&quot;WQW TEST&quot;</span> prio=<span class="number">5</span> tid=<span class="number">3</span> TimeWating</span><br><span class="line">  | group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> flags=<span class="number">1</span> obj=<span class="number">0x12c44230</span> self=<span class="number">0x772f0ec000</span></span><br><span class="line">  | sysTid=<span class="number">22938</span> nice=<span class="number">0</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x77391fbd50</span></span><br><span class="line">  | state=S schedstat=( <span class="number">274896</span> <span class="number">0</span> <span class="number">1</span> ) utm=<span class="number">0</span> stm=<span class="number">0</span> core=<span class="number">1</span> HZ=<span class="number">100</span></span><br><span class="line">  | stack=<span class="number">0x77390f9000</span>-<span class="number">0x77390fb000</span> stackSize=1039KB</span><br><span class="line">  | held mutexes=</span><br><span class="line">  at java.lang.Thread.sleep(Native method)</span><br><span class="line">  - sleeping on &lt;<span class="number">0x043831a6</span>&gt; (a java.lang.Object)</span><br><span class="line">  at java.lang.Thread.sleep(Thread.java:<span class="number">440</span>)</span><br><span class="line">  - locked &lt;<span class="number">0x043831a6</span>&gt; (a java.lang.Object)</span><br><span class="line">  at java.lang.Thread.sleep(Thread.java:<span class="number">356</span>)</span><br><span class="line">  at com.example.test.MainActivity$onCreate$<span class="number">2</span>$thread$<span class="number">1.</span>run(MainActivity.kt:<span class="number">22</span>)</span><br><span class="line">  - locked &lt;<span class="number">0x01aed1da</span>&gt; (a java.lang.Object)————————————————————关键行！！！</span><br><span class="line">  at java.lang.Thread.run(Thread.java:<span class="number">919</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这是一个典型的主线程被锁阻塞的例子；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">waiting to lock &lt;<span class="number">0x01aed1da</span>&gt; (a java.lang.Object) held by thread <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<p>其中等待的锁是&lt;0x01aed1da&gt;，这个锁的持有者是线程 3。进一步搜索 “tid&#x3D;3” 找到线程3， 发现它正在TimeWating。<br>那么ANR的原因找到了：线程3持有了一把锁，并且自身长时间不释放，主线程等待这把锁发生超时。在线上环境中，常见因锁而ANR的场景是SharePreference写入。</p>
+<h2 id="CPU被抢占"><a href="#CPU被抢占" class="headerlink" title="CPU被抢占"></a>CPU被抢占</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CPU usage from 0ms to 10625ms <span class="title function_">later</span> <span class="params">(<span class="number">2020</span>-<span class="number">03</span>-09 <span class="number">14</span>:<span class="number">38</span>:<span class="number">31.633</span> to <span class="number">2020</span>-<span class="number">03</span>-09 <span class="number">14</span>:<span class="number">38</span>:<span class="number">42.257</span>)</span>:</span><br><span class="line"><span class="number">543</span>% <span class="number">2045</span>/com.alibaba.android.rimet: <span class="number">54</span>% user + <span class="number">89</span>% kernel / faults: <span class="number">4608</span> minor <span class="number">1</span> major ————关键行！！！</span><br><span class="line"><span class="number">99</span>% <span class="number">674</span>/android.hardware.camera.provider@<span class="number">2.4</span>-service: <span class="number">81</span>% user + <span class="number">18</span>% kernel / faults: <span class="number">403</span> minor</span><br><span class="line"><span class="number">24</span>% <span class="number">32589</span>/com.wang.test: <span class="number">22</span>% user + <span class="number">1.4</span>% kernel / faults: <span class="number">7432</span> minor <span class="number">1</span> major</span><br><span class="line">........省略N行.....</span><br></pre></td></tr></table></figure>
+
+<p>如上日志，第二行是钉钉的进程，占据CPU高达543%，抢占了大部分CPU资源，因而导致发生ANR。</p>
+<p>内存紧张导致ANR<br>如果有一份日志，CPU和堆栈都很正常（不贴出来了），仍旧发生ANR，考虑是内存紧张。<br>从CPU第一行信息可以发现，ANR的时间点是2020-10-31 22:38:58.468—CPU usage from 0ms to 21752ms later (2020-10-31 22:38:58.468 to 2020-10-31 22:39:20.220)<br>接着去系统日志里搜索am_meminfo， 这个没有搜索到。再次搜索onTrimMemory，果然发现了很多条记录；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>-<span class="number">31</span> <span class="number">22</span>:<span class="number">37</span>:<span class="number">19.749</span> <span class="number">20733</span> <span class="number">20733</span> E Runtime : onTrimMemory level:<span class="number">80</span>,pid:com.xxx.xxx:Launcher0</span><br><span class="line"><span class="number">10</span>-<span class="number">31</span> <span class="number">22</span>:<span class="number">37</span>:<span class="number">33.458</span> <span class="number">20733</span> <span class="number">20733</span> E Runtime : onTrimMemory level:<span class="number">80</span>,pid:com.xxx.xxx:Launcher0</span><br><span class="line"><span class="number">10</span>-<span class="number">31</span> <span class="number">22</span>:<span class="number">38</span>:<span class="number">00.153</span> <span class="number">20733</span> <span class="number">20733</span> E Runtime : onTrimMemory level:<span class="number">80</span>,pid:com.xxx.xxx:Launcher0</span><br><span class="line"><span class="number">10</span>-<span class="number">31</span> <span class="number">22</span>:<span class="number">38</span>:<span class="number">58.731</span> <span class="number">20733</span> <span class="number">20733</span> E Runtime : onTrimMemory level:<span class="number">80</span>,pid:com.xxx.xxx:Launcher0</span><br><span class="line"><span class="number">10</span>-<span class="number">31</span> <span class="number">22</span>:<span class="number">39</span>:<span class="number">02.816</span> <span class="number">20733</span> <span class="number">20733</span> E Runtime : onTrimMemory level:<span class="number">80</span>,pid:com.xxx.xxx:Launcher0</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，在发生ANR的时间点前后，内存都处于紧张状态，level等级是80，查看Android API 文档；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Level for &#123;<span class="doctag">@link</span> #onTrimMemory(int)&#125;: the process is nearing the end</span></span><br><span class="line"><span class="comment">* of the background LRU list, and if more memory isn&#x27;t found soon it will</span></span><br><span class="line"><span class="comment">* be killed.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TRIM_MEMORY_COMPLETE</span> <span class="operator">=</span> <span class="number">80</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可知80这个等级是很严重的，应用马上就要被杀死，被杀死的这个应用从名字可以看出来是桌面，连桌面都快要被杀死，那普通应用能好到哪里去呢？<br>一般来说，发生内存紧张，会导致多个应用发生ANR，所以在日志中如果发现有多个应用一起ANR了，可以初步判定，此ANR与你的应用无关。</p>
+<h2 id="系统服务超时导致ANR"><a href="#系统服务超时导致ANR" class="headerlink" title="系统服务超时导致ANR"></a>系统服务超时导致ANR</h2><p>系统服务超时一般会包含BinderProxy.transactNative关键字，请看如下日志：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;main&quot;</span> prio=<span class="number">5</span> tid=<span class="number">1</span> Native</span><br><span class="line">| group=<span class="string">&quot;main&quot;</span> sCount=<span class="number">1</span> dsCount=<span class="number">0</span> flags=<span class="number">1</span> obj=<span class="number">0x727851e8</span> self=<span class="number">0x78d7060e00</span></span><br><span class="line">| sysTid=<span class="number">4894</span> nice=<span class="number">0</span> cgrp=<span class="keyword">default</span> sched=<span class="number">0</span>/<span class="number">0</span> handle=<span class="number">0x795cc1e9a8</span></span><br><span class="line">| state=S schedstat=( <span class="number">8292806752</span> <span class="number">1621087524</span> <span class="number">7167</span> ) utm=<span class="number">707</span> stm=<span class="number">122</span> core=<span class="number">5</span> HZ=<span class="number">100</span></span><br><span class="line">| stack=<span class="number">0x7febb64000</span>-<span class="number">0x7febb66000</span> stackSize=8MB</span><br><span class="line">| held mutexes=</span><br><span class="line">kernel: __switch_to+<span class="number">0x90</span>/<span class="number">0xc4</span></span><br><span class="line">kernel: binder_thread_read+<span class="number">0xbd8</span>/<span class="number">0x144c</span></span><br><span class="line">kernel: binder_ioctl_write_read.constprop<span class="number">.58</span>+<span class="number">0x20c</span>/<span class="number">0x348</span></span><br><span class="line">kernel: binder_ioctl+<span class="number">0x5d4</span>/<span class="number">0x88c</span></span><br><span class="line">kernel: do_vfs_ioctl+<span class="number">0xb8</span>/<span class="number">0xb1c</span></span><br><span class="line">kernel: SyS_ioctl+<span class="number">0x84</span>/<span class="number">0x98</span></span><br><span class="line">kernel: cpu_switch_to+<span class="number">0x34c</span>/<span class="number">0x22c0</span></span><br><span class="line"><span class="keyword">native</span>: #<span class="number">00</span> pc 000000000007a2ac  /system/lib64/libc.so (__ioctl+<span class="number">4</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">01</span> pc 00000000000276ec  /system/lib64/libc.so (ioctl+<span class="number">132</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">02</span> pc 00000000000557d4  /system/lib64/libbinder.so (android::IPCThreadState::talkWithDriver(bool)+<span class="number">252</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">03</span> pc 0000000000056494  /system/lib64/libbinder.so (android::IPCThreadState::waitForResponse(android::Parcel*, <span class="type">int</span>*)+<span class="number">60</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">04</span> pc 00000000000562d0  /system/lib64/libbinder.so (android::IPCThreadState::transact(<span class="type">int</span>, unsigned <span class="type">int</span>, android::Parcel const&amp;, android::Parcel*, unsigned <span class="type">int</span>)+<span class="number">216</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">05</span> pc 000000000004ce1c  /system/lib64/libbinder.so (android::BpBinder::transact(unsigned <span class="type">int</span>, android::Parcel const&amp;, android::Parcel*, unsigned <span class="type">int</span>)+<span class="number">72</span>)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">06</span> pc 00000000001281c8  /system/lib64/libandroid_runtime.so (???)</span><br><span class="line"><span class="keyword">native</span>: #<span class="number">07</span> pc 0000000000947ed4  /system/framework/arm64/boot-framework.oat (Java_android_os_BinderProxy_transactNative__ILandroid_os_Parcel_2Landroid_os_Parcel_2I+<span class="number">196</span>)</span><br><span class="line">at android.os.BinderProxy.transactNative(Native method) ————————————————关键行！！！</span><br><span class="line">at android.os.BinderProxy.transact(Binder.java:<span class="number">804</span>)</span><br><span class="line">at android.net.IConnectivityManager$Stub$Proxy.getActiveNetworkInfo(IConnectivityManager.java:<span class="number">1204</span>)—关键行！</span><br><span class="line">at android.net.ConnectivityManager.getActiveNetworkInfo(ConnectivityManager.java:<span class="number">800</span>)</span><br><span class="line">at com.xiaomi.NetworkUtils.getNetworkInfo(NetworkUtils.java:<span class="number">2</span>)</span><br><span class="line">at com.xiaomi.frameworkbase.utils.NetworkUtils.getNetWorkType(NetworkUtils.java:<span class="number">1</span>)</span><br><span class="line">at com.xiaomi.frameworkbase.utils.NetworkUtils.isWifiConnected(NetworkUtils.java:<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>从堆栈可以看出获取网络信息发生了ANR：getActiveNetworkInfo。<br>前文有讲过：系统的服务都是Binder机制（16个线程），服务能力也是有限的，有可能系统服务长时间不响应导致ANR。如果其他应用占用了所有Binder线程，那么当前应用只能等待。<br>可进一步搜索：blockUntilThreadAvailable关键字：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">at android.os.Binder.blockUntilThreadAvailable(Native method)</span><br></pre></td></tr></table></figure>
+
+<p>如果有发现某个线程的堆栈，包含此字样，可进一步看其堆栈，确定是调用了什么系统服务。此类ANR也是属于系统环境的问题，如果某类型机器上频繁发生此问题，应用层可以考虑规避策略。</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6971327652468621326#heading-20">干货：ANR日志分析全面解析</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/30c1a5ad63a3">Android应用ANR分析</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .poem-container {
+      text-align: center;
+      margin-top: 30px;
+      border: 2px solid gray;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+    .poem-content {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .poem-details {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="poem-container">
+    <span class="poem-content" id="jrsc">正在加载今日诗词....</span>
+    <br>
+    <span class="poem-details" id="jrsc-details"></span>
+  </div>
+
+  <script src="//sdk.jinrishici.com/v2/browser/jinrishici.js"></script>
+  <script>
+    jinrishici.load((result) => {
+      let jrsc = document.getElementById('jrsc');
+      let jrscDetails = document.getElementById('jrsc-details');
+      const data = result.data;
+      let author = data.origin.author;
+      let title = '《' + data.origin.title + '》';
+      let content = data.content.substr(0, data.content.length - 1);
+      let dynasty = data.origin.dynasty.substr(0, data.origin.dynasty.length - 1);
+      jrsc.innerText = content;
+      jrscDetails.innerText = dynasty + ' · ' + author + ' ' + title;
+    });
+  </script>
+</body>
+</html>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/b84d2020/" rel="prev" title="安卓面试题">
+                  <i class="fa fa-angle-left"></i> 安卓面试题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/18596a3e/" rel="next" title="Gradle">
+                  Gradle <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">microli</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-cn","enable":true,"serverURL":"https://waline-peach.vercel.app/","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"placeholder":"请文明评论呀","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":true,"requiredFields":[],"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","el":"#waline","comment":true,"path":"/posts/c6084ae/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

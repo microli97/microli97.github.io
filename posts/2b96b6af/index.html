@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.lug.ustc.edu.cn/css?family=Courier+New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="不同CPU架构之间的兼容性 x86其实是可以在x86_64机器上跑的，所以x86_64兼容x86。  armeabi-v7a其实是可以在arm64-v8a机器上跑的，所以arm64_v8a兼容armeabi-v7a。  armeabi其实是可以在x86_64、x86、arm64-v8a、armeabi-v7a机器上跑的，所以x86_64、x86、arm64-v8a、armeabi-v7a兼容arm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CPU架构适配">
+<meta property="og:url" content="http://example.com/posts/2b96b6af/index.html">
+<meta property="og:site_name" content="海纳百川">
+<meta property="og:description" content="不同CPU架构之间的兼容性 x86其实是可以在x86_64机器上跑的，所以x86_64兼容x86。  armeabi-v7a其实是可以在arm64-v8a机器上跑的，所以arm64_v8a兼容armeabi-v7a。  armeabi其实是可以在x86_64、x86、arm64-v8a、armeabi-v7a机器上跑的，所以x86_64、x86、arm64-v8a、armeabi-v7a兼容arm">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/WX20240318-122047.png">
+<meta property="og:image" content="http://example.com/images/WX20240318-143320.png">
+<meta property="article:published_time" content="2024-03-18T04:16:47.000Z">
+<meta property="article:modified_time" content="2025-06-07T04:09:21.445Z">
+<meta property="article:author" content="microli">
+<meta property="article:tag" content="JAVA, TS, 安卓">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/WX20240318-122047.png">
+
+
+<link rel="canonical" href="http://example.com/posts/2b96b6af/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/posts/2b96b6af/","path":"posts/2b96b6af/","title":"CPU架构适配"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CPU架构适配 | 海纳百川</title>
+  
+
+
+
+
+
+
+
+<link rel="dns-prefetch" href="https://waline-peach.vercel.app/">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">海纳百川</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-图书"><a href="/books/" rel="section"><i class="fa fa-book fa-fw"></i>图书</a></li><li class="menu-item menu-item-电影"><a href="/movies/" rel="section"><i class="fa fa-film fa-fw"></i>电影</a></li><li class="menu-item menu-item-音乐"><a href="/songs/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E5%90%8CCPU%E6%9E%B6%E6%9E%84%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">不同CPU架构之间的兼容性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%BC%E5%AE%B9%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">兼容模式的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#so%E5%BA%93%E5%A4%AA%E5%A4%9A%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96Apk%E4%BD%93%E7%A7%AF"><span class="nav-number">3.</span> <span class="nav-text">so库太多如何优化Apk体积</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BAApp%E6%8F%90%E4%BE%9B%E4%B8%8D%E5%90%8C%E7%9A%84CPU%E6%9E%B6%E6%9E%84%E7%9A%84Native%E5%BA%93"><span class="nav-number">3.1.</span> <span class="nav-text">为App提供不同的CPU架构的Native库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96so%E4%BD%93%E7%A7%AF"><span class="nav-number">3.2.</span> <span class="nav-text">优化so体积</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E6%97%B6%E5%88%86%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">构建时分包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SDK%E5%BC%80%E5%8F%91%E8%80%85%E5%BA%94%E5%BD%93%E6%8F%90%E4%BE%9B%E5%93%AA%E4%BA%9Bso%E5%BA%93"><span class="nav-number">5.</span> <span class="nav-text">SDK开发者应当提供哪些so库</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="microli"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">microli</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">131</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shizhongyu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shizhongyu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/posts/2b96b6af/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="microli">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="海纳百川">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CPU架构适配 | 海纳百川">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CPU架构适配
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-18 12:16:47" itemprop="dateCreated datePublished" datetime="2024-03-18T12:16:47+08:00">2024-03-18</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/posts/2b96b6af/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/2b96b6af/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="waline-pageview-count" data-path="/posts/2b96b6af/"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="不同CPU架构之间的兼容性"><a href="#不同CPU架构之间的兼容性" class="headerlink" title="不同CPU架构之间的兼容性"></a>不同CPU架构之间的兼容性</h1><ol>
+<li>x86其实是可以在x86_64机器上跑的，所以x86_64兼容x86。 </li>
+<li>armeabi-v7a其实是可以在arm64-v8a机器上跑的，所以arm64_v8a兼容armeabi-v7a。 </li>
+<li>armeabi其实是可以在x86_64、x86、arm64-v8a、armeabi-v7a机器上跑的，所以x86_64、x86、arm64-v8a、armeabi-v7a兼容armeabi。</li>
+</ol>
+<p><img src="/../images/WX20240318-122047.png" alt="WX20240318-122047.png"></p>
+<span id="more"></span>
+
+
+<p>例子：</p>
+<p>项目中的libs目录下有以下so库：armeabi（libmath.so、libui.so）、armeabi-v7a（libmath.so、libui.so）、arm64-v8a（libmath.so、libui.so），那么在arm64-v8a的机器上Native库如何加载呢？</p>
+<p>它会优先选择当前CPU对应的CPU架构目录下的so库，也就是会加载arm64-v8a（libmath.so、libui.so）目录下的so库，假设如果arm64-v8a架构的so库里面没有libui.so了，那么会发生什么问题呢？它还是会去arm64-v8a架构的so库里面找，但发现so库里没有libui.so，那么加载就会失败，那刚刚也说了armeabi和armeabi-v7a本身就兼容arm64-v8a，那为什么不去加载它们呢？这是因为CPU加载so库的时候就这么规定的，所以要提供so库就一定要提供一全套，要么就一个都不要提供，这样CPU就会去找它所兼容的so库。</p>
+<h1 id="兼容模式的问题"><a href="#兼容模式的问题" class="headerlink" title="兼容模式的问题"></a>兼容模式的问题</h1><p>1、兼容模式运行的Native库无法获得最优性能（所以x86的电脑上运行arm的虚拟机会很慢！）<br>2、兼容模式容易出现一些难以排查的内存问题<br>3、系统优先加载对应架构目录下的so库</p>
+<h1 id="so库太多如何优化Apk体积"><a href="#so库太多如何优化Apk体积" class="headerlink" title="so库太多如何优化Apk体积"></a>so库太多如何优化Apk体积</h1><h2 id="为App提供不同的CPU架构的Native库"><a href="#为App提供不同的CPU架构的Native库" class="headerlink" title="为App提供不同的CPU架构的Native库"></a>为App提供不同的CPU架构的Native库</h2><p>实际开发过程中，我们不可能提供所有CPU架构的so库，那就要考虑兼容，兼容性最好的当然就是armeabi了，那是不是我们就只需要提供这一套了呢？如果在性能不敏感且无运行时异常的情况下可以这么干。但目前市场上大部分的机器的CPU架构都已经是armeabi-v7a和arm64-v8a了，所以这个时候提供一套兼容性最好的so库就是armeabi-v7a了，所以我们要结合目标用户群体提供合适的架构。</p>
+<p>还有一个方案就是，我们只提供一个CPU架构目录，比如armeabi-v7a，把所需要的so库都扔到这一个目录里面，这样一来里面也可以提供arm64-v8a的so库等，这样的话，我们就可以动态根据当前的CPU架构去选择加载一些特定的so库，微信就是这么干的。</p>
+<p>那到底选择那种方案去提供so库呢？</p>
+<p>最好的办法就是通过线上监控问题，然后针对性提供Native库。</p>
+<p><img src="/../images/WX20240318-143320.png" alt="WX20240318-143320.png"></p>
+<p>对待libmath.so 对性能要求比较高，可以同事提供v7和v8两个。</p>
+<h2 id="优化so体积"><a href="#优化so体积" class="headerlink" title="优化so体积"></a>优化so体积</h2><ol>
+<li>默认隐藏所有符号，只公开必要的（-fvisibility&#x3D;hidden）</li>
+<li>禁用C++ Exception&amp;RTTI（-fno-exception -fno-rtti）</li>
+<li>不要使用iostream，应优先使用Android Log</li>
+<li>使用gc-sections去除无用代码（类似于Java的混淆） LOCAL_CFLAGS +&#x3D; -ffunction-sections -fdata-sections  LOCAL_LDFLAGS +&#x3D; -Wl,–gc-sections</li>
+</ol>
+<h1 id="构建时分包"><a href="#构建时分包" class="headerlink" title="构建时分包"></a>构建时分包</h1><p>根据CPU架构进行分包，每一个包里面只包含一种CPU架构，然后借助应用市场按CPU架构分发安装包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">splits &#123;</span><br><span class="line">    abi &#123;</span><br><span class="line">        enable true</span><br><span class="line">        reset()</span><br><span class="line">        include &quot;armeabi-v7a&quot;、&quot;arm64-v8a&quot;、&quot;x86&quot;、&quot;x86_64&quot;</span><br><span class="line">        universalApk true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="SDK开发者应当提供哪些so库"><a href="#SDK开发者应当提供哪些so库" class="headerlink" title="SDK开发者应当提供哪些so库"></a>SDK开发者应当提供哪些so库</h1><ol>
+<li>尽量不在Native层开发，降低问题跟踪维护成本</li>
+<li>尽量优化Native库的体积，降低开发者的使用成本</li>
+<li>必须提供完整的CPU架构依赖</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .poem-container {
+      text-align: center;
+      margin-top: 30px;
+      border: 2px solid gray;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f5f5f5;
+    }
+    .poem-content {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .poem-details {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="poem-container">
+    <span class="poem-content" id="jrsc">正在加载今日诗词....</span>
+    <br>
+    <span class="poem-details" id="jrsc-details"></span>
+  </div>
+
+  <script src="//sdk.jinrishici.com/v2/browser/jinrishici.js"></script>
+  <script>
+    jinrishici.load((result) => {
+      let jrsc = document.getElementById('jrsc');
+      let jrscDetails = document.getElementById('jrsc-details');
+      const data = result.data;
+      let author = data.origin.author;
+      let title = '《' + data.origin.title + '》';
+      let content = data.content.substr(0, data.content.length - 1);
+      let dynasty = data.origin.dynasty.substr(0, data.origin.dynasty.length - 1);
+      jrsc.innerText = content;
+      jrscDetails.innerText = dynasty + ' · ' + author + ' ' + title;
+    });
+  </script>
+</body>
+</html>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/7678a22a/" rel="prev" title="泛型">
+                  <i class="fa fa-angle-left"></i> 泛型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2cc69b3b/" rel="next" title="Java的Native方法与底层Native函数是怎么绑定的？">
+                  Java的Native方法与底层Native函数是怎么绑定的？ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">microli</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-cn","enable":true,"serverURL":"https://waline-peach.vercel.app/","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"placeholder":"请文明评论呀","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":true,"requiredFields":[],"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","el":"#waline","comment":true,"path":"/posts/2b96b6af/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

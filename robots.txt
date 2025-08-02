@@ -1,0 +1,2 @@
+User-agent: *      # 针对所有搜索引擎
+Disallow: /        # 禁止抓取整个网站
