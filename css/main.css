@@ -184,8 +184,8 @@ body {
   background: var(--body-bg-color);
   box-sizing: border-box;
   color: var(--text-color);
-  font-family: Courier New, 'Courier New', sans-serif;
-  font-size: 1em;
+  font-family: LXGW WenKai, 'Courier New', sans-serif;
+  font-size: 1.05em;
   line-height: 2;
   min-height: 100%;
   position: relative;
@@ -197,7 +197,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Courier New, Courier New, 'Courier New', sans-serif;
+  font-family: LXGW WenKai, LXGW WenKai, 'Courier New', sans-serif;
   font-weight: bold;
   line-height: 1.5;
   margin: 30px 0 15px;
@@ -490,7 +490,7 @@ pre figcaption a:hover {
 }
 pre,
 code {
-  font-family: Courier New, consolas, Menlo, monospace, 'Courier New';
+  font-family: JetBrains Mono, Consolas, Courier New, monospace, consolas, Menlo, monospace, 'Courier New';
 }
 code {
   border-radius: 3px;
@@ -1064,8 +1064,8 @@ pre code {
   color: var(--brand-hover-color);
 }
 .site-title {
-  font-family: Courier New, 'Courier New', sans-serif;
-  font-size: 1.375em;
+  font-family: LXGW WenKai, LXGW WenKai, 'Courier New', sans-serif;
+  font-size: 1.3em;
   font-weight: normal;
   line-height: 1.5;
   margin: 0;
@@ -1720,7 +1720,7 @@ pre code {
   width: 4px;
 }
 .post-body {
-  font-family: Courier New, Courier New, 'Courier New', sans-serif;
+  font-family: LXGW WenKai, LXGW WenKai, 'Courier New', sans-serif;
   overflow-wrap: break-word;
 }
 @media (min-width: 1200px) {
@@ -1906,7 +1906,7 @@ pre code {
 }
 .posts-expand .post-meta-container {
   color: #999;
-  font-family: Courier New, Courier New, 'Courier New', sans-serif;
+  font-family: LXGW WenKai, LXGW WenKai, 'Courier New', sans-serif;
   font-size: 0.75em;
   margin-top: 3px;
 }
@@ -2629,7 +2629,7 @@ header.header {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #ff2eff;
+  background: #3bdb74;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2678,6 +2678,299 @@ header.header {
 }
 .sub-menu .menu-item {
   display: inline-block;
+}
+/* ============================================================
+ * NexT 主题自定义样式 - 分类/标签云美化
+ * ============================================================ */
+/* === 标签云（tags page） === */
+.tag-cloud {
+  padding: 12px 0;
+}
+.tag-cloud-title {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+.tag-cloud-tags {
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+}
+.tag-cloud-tags a {
+  display: inline-block;
+  padding: 6px 14px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, #f6f8fa 0%, #eef1f4 100%) !important;
+  color: #555 !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+}
+.tag-cloud-tags a:hover {
+  transform: translateY(-2px) scale(1.04);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 16px rgba(102,126,234,0.35);
+}
+.tag-cloud-tags a:nth-child(3n+1) {
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7e0 100%) !important;
+  color: #d53f8c !important;
+}
+.tag-cloud-tags a:nth-child(3n+1):hover {
+  background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%) !important;
+  color: #fff !important;
+}
+.tag-cloud-tags a:nth-child(3n+2) {
+  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%) !important;
+  color: #3182ce !important;
+}
+.tag-cloud-tags a:nth-child(3n+2):hover {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%) !important;
+  color: #fff !important;
+}
+.tag-cloud-tags a:nth-child(3n+3) {
+  background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%) !important;
+  color: #38a169 !important;
+}
+.tag-cloud-tags a:nth-child(3n+3):hover {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+  color: #fff !important;
+}
+/* === 分类页（categories page） === */
+.category-all-page {
+  padding: 12px 0;
+}
+.category-all-title {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+.category-all .category-list {
+  display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  list-style: none;
+  padding: 0;
+  justify-content: center;
+}
+.category-list-item {
+  display: inline-block;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  background: linear-gradient(135deg, #f6f8fa 0%, #eef1f4 100%);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: all 0.25s ease;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.category-list-item:hover {
+  transform: translateY(-2px) scale(1.03);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(102,126,234,0.32);
+}
+.category-list-item:hover .category-list-link,
+.category-list-item:hover .category-list-count {
+  color: #fff !important;
+}
+.category-list-link {
+  color: #2d3748;
+  text-decoration: none;
+  font-weight: 500;
+}
+.category-list-count {
+  color: #888;
+  margin-left: 6px;
+  font-size: 0.85em;
+  font-weight: 400;
+}
+/* 配色循环让分类卡片有节奏感 */
+.category-list-item:nth-child(4n+1) {
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7e0 100%);
+}
+.category-list-item:nth-child(4n+1) .category-list-link {
+  color: #d53f8c;
+}
+.category-list-item:nth-child(4n+2) {
+  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+}
+.category-list-item:nth-child(4n+2) .category-list-link {
+  color: #3182ce;
+}
+.category-list-item:nth-child(4n+3) {
+  background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+}
+.category-list-item:nth-child(4n+3) .category-list-link {
+  color: #38a169;
+}
+.category-list-item:nth-child(4n+4) {
+  background: linear-gradient(135deg, #fffff0 0%, #fefcbf 100%);
+}
+.category-list-item:nth-child(4n+4) .category-list-link {
+  color: #d69e2e;
+}
+/* ============================================================
+ * 首页文章卡片化
+ * ============================================================ */
+/* 文章列表整体容器：grid 间距 */
+.main-inner.index.posts-expand {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  padding: 20px 0;
+}
+/* 每篇文章卡片化 */
+.posts-expand .post-block {
+  background: linear-gradient(180deg, #fff 0%, #fafbfc 100%) !important;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+  border-radius: 12px !important;
+  padding: 24px 28px !important;
+  margin: 0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.posts-expand .post-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.posts-expand .post-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(102,126,234,0.18) !important;
+  border-color: rgba(102,126,234,0.3) !important;
+}
+.posts-expand .post-block:hover::before {
+  opacity: 1;
+}
+/* 标题区 */
+.posts-expand .post-header {
+  padding: 0 0 12px 0 !important;
+  border-bottom: 1px dashed rgba(0,0,0,0.06);
+  margin-bottom: 16px !important;
+}
+.posts-expand .post-title {
+  font-size: 1.4em !important;
+  margin: 0 0 8px 0 !important;
+  font-weight: 600 !important;
+}
+.posts-expand .post-title-link {
+  color: #2d3748 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
+}
+.posts-expand .post-block:hover .post-title-link {
+  color: #667eea !important;
+}
+/* meta 信息 */
+.posts-expand .post-meta {
+  font-size: 0.85em;
+  color: #718096;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.posts-expand .post-meta a {
+  color: #4299e1 !important;
+  text-decoration: none !important;
+}
+.posts-expand .post-meta a:hover {
+  color: #3182ce !important;
+  text-decoration: underline !important;
+}
+/* 正文摘要 */
+.posts-expand .post-body {
+  color: #4a5568;
+  line-height: 1.75;
+  font-size: 0.95em;
+}
+.posts-expand .post-body img {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+/* "阅读全文" 按钮化 */
+.posts-expand .post-more-link {
+  margin-top: 20px !important;
+}
+.posts-expand .post-more-link a {
+  display: inline-block;
+  padding: 8px 20px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  border-radius: 20px !important;
+  text-decoration: none !important;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(102,126,234,0.3);
+}
+.posts-expand .post-more-link a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(102,126,234,0.45);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+}
+/* 置顶标识 */
+.posts-expand .post-sticky-flag {
+  background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+  color: #fff !important;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75em;
+  margin-right: 8px;
+}
+/* 首页分页按钮美化 */
+.posts-expand .pagination,
+.main-inner.index .pagination {
+  margin-top: 30px;
+  text-align: center;
+}
+.main-inner.index .pagination .page-number,
+.main-inner.index .pagination .prev,
+.main-inner.index .pagination .next {
+  display: inline-block;
+  padding: 6px 14px;
+  margin: 0 4px;
+  border-radius: 8px;
+  background: #f6f8fa;
+  color: #4a5568;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.main-inner.index .pagination .page-number:hover,
+.main-inner.index .pagination .prev:hover,
+.main-inner.index .pagination .next:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(102,126,234,0.3);
+}
+.main-inner.index .pagination .page-number.current {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff !important;
+  font-weight: 600;
 }
 code {
   padding: 2px 4px;
